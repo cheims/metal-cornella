@@ -8,10 +8,14 @@ Arcade de acción (*run & gun*) ambientado en Cornellà de Llobregat: de l'Almed
 | Acción | Teclado | Móvil |
 |---|---|---|
 | Mover / apuntar | Flechas o WASD | Stick |
+| Saltar | Espacio o K | SALTO |
 | Disparar | Z o J | FUEGO |
-| Saltar | X o K | SALTO |
+| Escudo (mantener) | X o I | ESCUDO |
 | Granada | C o L | BOMBA |
 | Pausa · Sonido · Pantalla completa | P · M · F | Botones superiores |
+
+**Vida:** 5 corazones por vida; cada golpe quita uno. El bocata recupera un corazón.
+**Escudo:** bloquea balas y proyectiles que llegan de frente. Gasta energía mientras lo mantienes y con cada bloqueo; si se vacía, se rompe y tarda unos segundos en volver. Con el escudo alzado no puedes disparar.
 
 También funciona con mando. En el móvil se puede instalar: *Añadir a pantalla de inicio*.
 
