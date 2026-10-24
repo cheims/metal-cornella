@@ -1,5 +1,5 @@
 // Metal Cornellà — service worker: red primero (siempre la última versión) y caché para jugar sin conexión
-const CACHE = 'metal-cornella-v4';
+const CACHE = 'metal-cornella-v5';
 const CORE = ['./', './index.html', './manifest.webmanifest', './icons/icon-192.png', './icons/icon-512.png'];
 self.addEventListener('install', e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(CORE))); self.skipWaiting(); });
 self.addEventListener('activate', e => {

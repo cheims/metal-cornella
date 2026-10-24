@@ -54,9 +54,8 @@ canvas{display:block;width:100%;height:100%;image-rendering:pixelated;image-rend
 @keyframes blink{50%{opacity:.55}}
 @media (prefers-reduced-motion:reduce){.btn{animation:none}}
 .screen::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:4;background:repeating-linear-gradient(to bottom,rgba(0,0,0,.10) 0 1px,transparent 1px 3px)}
-.musicrow{display:flex;gap:1.4cqw;flex-wrap:wrap;justify-content:center;align-items:center}
+.btnrow{display:flex;gap:1.4cqw;flex-wrap:wrap;justify-content:center;align-items:center}
 .btn.mini{font-size:1.7cqw;padding:1cqw 1.8cqw;box-shadow:0 .35cqw 0 #56606c;cursor:pointer;display:inline-block}
-.vh{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none;overflow:hidden}
 .small{margin:0;font-family:var(--f-pix);font-size:1.7cqw;color:var(--dim);letter-spacing:.06em}
 .big{margin:0;font-family:var(--f-logo);font-size:7cqw;color:var(--sy);-webkit-text-stroke:.25cqw #000;text-shadow:0 .5cqw 0 #000}
 .stats{display:grid;grid-template-columns:auto auto;gap:.8cqw 3cqw;font-family:var(--f-pix);font-size:2.2cqw;text-align:left}
@@ -107,13 +106,9 @@ body.touch .keys{display:none}
       <div class="logo" aria-label="Metal Cornellà"><span class="l1">METAL</span><span class="l2">CORNELLÀ</span></div>
       <p class="tag">Misión 1 · De l'Almeda a l'Estadi</p>
       <button class="btn" id="btnStart">PULSA ENTER PARA EMPEZAR</button>
-      <div class="musicrow">
-        <label class="btn alt mini" for="musicFile" id="musicLbl">♫ PON TU MÚSICA</label>
-        <input type="file" id="musicFile" class="vh" accept="audio/*">
-        <button class="btn alt mini" id="musicReset" hidden>MÚSICA DEL JUEGO</button>
+      <div class="btnrow">
         <button class="btn alt mini fsbtn" type="button"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M1 5V1h4M11 1h4v4M15 11v4h-4M5 15H1v-4"/></svg><span class="fslbl">PANTALLA COMPLETA</span></button>
       </div>
-      <p class="small" id="musicName" hidden></p>
       <p class="small">RÉCORD <span id="hiScore">000000</span> · M SONIDO</p>
     </div>
 
@@ -313,39 +308,36 @@ const mtof=n=>440*Math.pow(2,(n-69)/12);
 const BASSPAT=[0,null,0,null,12,null,0,null,0,null,0,12,null,0,7,null];
 const LEAD=[69,0,72,0,76,0,74,72,0,69,0,67,69,0,0,0, 65,0,69,0,72,0,71,69,0,65,0,64,65,0,0,0,
             67,0,71,0,74,0,72,71,0,67,0,71,74,0,76,0, 76,0,74,0,71,0,67,0,64,0,67,0,71,0,74,0];
-const SONGS={rumba:{bpm:118,kind:'rumba',len:128},boss:{bpm:164,kind:'chip',len:64,roots:[50,46,48,45],tr:3}};
-// Rumba original (cadencia andaluza Lam-Sol-Fa-Mi), rasgueo 3-3-2, palmas y cajón
-const RCH=[[57,60,64],[55,59,62],[53,57,60],[52,56,59]],RBASS=[45,43,41,40];
-const RSTRUM=[1,0,0,1,0,0,1,0,1,0,0,1,0,0,1,0],RCHUCK=[0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0];
-const RBASSPAT=[0,null,null,null,null,null,7,null,12,null,null,null,null,null,7,null];
-const RMEL=[76,0,76,74,72,0,71,0,72,0,74,0,76,0,0,0, 74,0,74,72,71,0,69,0,71,0,72,0,74,0,0,0,
-            72,0,72,71,69,0,68,0,69,0,71,0,72,0,69,0, 68,0,69,0,71,0,72,0,71,0,69,0,68,0,0,0,
-            69,0,72,0,76,0,77,76,0,74,0,72,74,0,0,0, 67,0,71,0,74,0,76,74,0,72,0,71,72,0,0,0,
-            65,0,69,0,72,0,74,72,0,71,0,69,71,0,0,0, 68,0,71,0,74,0,72,71,69,0,68,0,64,0,0,0];
-let customAudio=null;
+const SONGS={main:{bpm:150,kind:'arcade',len:128},boss:{bpm:164,kind:'chip',len:64,roots:[50,46,48,45],tr:3}};
+// Tema arcade original en Mi menor (Mim-Do-Re-Mim / Mim-Do-Re-Si): bajo en corcheas, arpegio, batería y melodía
+const ACH=[[52,55,59],[48,52,55],[50,54,57],[52,55,59],[52,55,59],[48,52,55],[50,54,57],[47,51,54]];
+const ABASS=[40,36,38,40,40,36,38,35];
+const ABASSPAT=[0,null,0,12,0,null,0,12,0,null,0,12,0,null,7,12];
+const AARP=[0,1,2,1];
+const AMEL=[64,0,67,0,71,0,76,0, 74,0,71,0,67,0,71,0,  72,0,0,71,72,0,74,0, 76,0,0,0,72,0,0,0,
+            74,0,0,72,74,0,76,0, 78,0,76,0,74,0,72,0,  71,0,0,0,67,0,0,0, 64,0,67,0,71,0,0,0,
+            76,0,76,0,79,0,76,0, 74,0,71,0,74,0,76,0,  72,0,72,0,76,0,72,0, 71,0,67,0,71,0,72,0,
+            74,0,74,0,78,0,74,0, 81,0,78,0,76,0,74,0,  75,0,0,0,78,0,0,0, 71,0,75,0,78,0,0,0];
 function musicStart(name){
   A.want=name;
-  if(customAudio){if(A.timer){clearInterval(A.timer);A.timer=null;}customAudio.muted=!A.on;customAudio.play().catch(()=>{});return;}
-  if(!A.ctx)return;const so=name==='boss'?SONGS.boss:SONGS.rumba;if(A.song===so&&A.timer)return;
+  if(!A.ctx)return;const so=name==='boss'?SONGS.boss:SONGS.main;if(A.song===so&&A.timer)return;
   A.song=so;A.step=0;A.nextT=A.ctx.currentTime+0.06;
   if(!A.timer)A.timer=setInterval(musicTick,25);
 }
-function musicStop(){A.want=null;if(A.timer){clearInterval(A.timer);A.timer=null;}if(customAudio)customAudio.pause();}
-function strum(ch,t,v){ch.forEach((n,k)=>{tone(mtof(n),0.26,'triangle',v,null,t+k*0.013,A.mus);tone(mtof(n+12),0.1,'sawtooth',v*0.22,null,t+k*0.013,A.mus);});}
-function clap(t){for(let k=0;k<3;k++)nz(0.035,0.11,1500,t+k*0.009,A.mus,'bandpass');}
+function musicStop(){A.want=null;if(A.timer){clearInterval(A.timer);A.timer=null;}}
 function musicTick(){
   if(!A.ctx||!A.song||A.ctx.state!=='running')return;
   const so=A.song,sp=60/so.bpm/4;
   while(A.nextT<A.ctx.currentTime+0.12){
     const s=A.step,i=s&15,t=A.nextT;
-    if(so.kind==='rumba'){
-      const bar=(s>>4)%4;
-      if(RSTRUM[i])strum(RCH[bar],t,i%8===0?0.075:0.05);
-      if(RCHUCK[i]){nz(0.05,0.2,2200,t,A.mus,'bandpass');clap(t);}
-      const b=RBASSPAT[i];if(b!==null)tone(mtof(RBASS[bar]+b),sp*2.6,'triangle',0.26,null,t,A.mus);
-      if(i===0||i===10)tone(120,0.12,'sine',0.32,45,t,A.mus);
-      if(i%2===1)nz(0.02,0.035,8000,t,A.mus,'highpass');
-      const n=RMEL[s];if(n)tone(mtof(n),sp*1.9,'square',0.038,null,t,A.mus);
+    if(so.kind==='arcade'){
+      const bar=s>>4;
+      const b=ABASSPAT[i];if(b!==null)tone(mtof(ABASS[bar]+b),sp*0.9,'square',0.07,null,t,A.mus),tone(mtof(ABASS[bar]+b),sp*0.9,'triangle',0.2,null,t,A.mus);
+      tone(mtof(ACH[bar][AARP[i&3]]+12),sp*0.8,'triangle',0.035,null,t,A.mus);
+      if(i===0||i===8||i===10)tone(150,0.12,'sine',0.38,40,t,A.mus);
+      if(i===4||i===12){nz(0.12,0.2,2600,t,A.mus);tone(220,0.06,'triangle',0.08,120,t,A.mus);}
+      if(i%2===0)nz(0.025,0.05,9000,t,A.mus,'highpass');
+      const n=AMEL[s];if(n){tone(mtof(n),sp*1.8,'square',0.045,null,t,A.mus);tone(mtof(n)*1.004,sp*1.8,'square',0.02,null,t+0.012,A.mus);}
     }else{
       const bar=s>>4;
       const bo=BASSPAT[i];if(bo!==null)tone(mtof(so.roots[bar]+bo),sp*0.9,'triangle',0.24,null,t,A.mus);
@@ -360,7 +352,6 @@ function musicTick(){
 function setSound(on){
   A.on=on;store.set('mc_sound',on?'1':'0');
   if(A.master)A.master.gain.value=on?0.55:0;
-  if(customAudio)customAudio.muted=!on;
   if(!on&&'speechSynthesis' in window)try{speechSynthesis.cancel();}catch(e){}
 }
 
@@ -660,17 +651,17 @@ function newGame(){
   resetWorld();player=makePlayer(60,GROUND-60);score=0;lives=2;rescued=0;credits=0;playTime=0;
   S.mode='play';showOv(null);
   banner={t:0,text:'MISIÓN 1',sub:'¡SOM-HI!',life:150};
-  audioInit();musicStart('rumba');say('Misión uno. ¡Comienza!');
+  audioInit();musicStart('main');say('Misión uno. ¡Comienza!');
 }
 function showOv(id){for(const o of ['ovTitle','ovPause','ovOver','ovWin','ovFs'])document.getElementById(o).hidden=o!==id;document.getElementById('btnPause').hidden=!(id===null||id==='ovPause');const bf=document.getElementById('btnFull');if(bf)bf.hidden=id!==null;}
-function pauseGame(){if(S.mode!=='play')return;S.mode='paused';showOv('ovPause');if(A.ctx)A.ctx.suspend();if(customAudio)customAudio.pause();document.getElementById('btnResume').focus();}
-function resumeGame(){if(S.mode!=='paused')return;S.mode='play';showOv(null);if(A.ctx)A.ctx.resume();if(customAudio&&A.want)customAudio.play().catch(()=>{});for(const k in held)held[k]=false;}
+function pauseGame(){if(S.mode!=='play')return;S.mode='paused';showOv('ovPause');if(A.ctx)A.ctx.suspend();document.getElementById('btnResume').focus();}
+function resumeGame(){if(S.mode!=='paused')return;S.mode='play';showOv(null);if(A.ctx)A.ctx.resume();for(const k in held)held[k]=false;}
 function toTitle(){S.mode='title';showOv('ovTitle');musicStop();document.getElementById('hiScore').textContent=String(hi).padStart(6,'0');document.getElementById('btnStart').focus();}
 function saveHi(){if(score>hi){hi=score;store.set('mc_hi',String(hi));}}
 function gameOver(){saveHi();S.mode='over';S.count=10*60;showOv('ovOver');musicStop();document.getElementById('btnContinue').focus();}
 function continueGame(){
   credits++;score=0;lives=2;S.mode='play';showOv(null);
-  respawn();musicStart(enemies.some(e=>e.type==='boss')?'boss':'rumba');
+  respawn();musicStart(enemies.some(e=>e.type==='boss')?'boss':'main');
 }
 
 // =====================================================================
@@ -1398,19 +1389,6 @@ document.getElementById('btnStart').addEventListener('click',()=>{audioInit();re
 document.getElementById('ovTitle').addEventListener('pointerdown',e=>{if(!e.target.closest('button,label,input')&&S.mode==='title'&&isTouch){audioInit();resetZoom();enterFull();newGame();}});
 document.querySelectorAll('.fsbtn').forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();fullAction();}));
 document.getElementById('btnFsOk').addEventListener('click',()=>{showOv(fsReturn);if(fsReturn==='ovTitle')document.getElementById('btnStart').focus();else if(fsReturn==='ovPause')document.getElementById('btnResume').focus();});
-// "Pon tu música": reproduce un archivo del propio dispositivo; no se sube a ningún sitio
-document.getElementById('musicFile').addEventListener('change',e=>{
-  const f=e.target.files&&e.target.files[0];if(!f)return;
-  if(customAudio){customAudio.pause();URL.revokeObjectURL(customAudio.src);}
-  customAudio=new Audio(URL.createObjectURL(f));customAudio.loop=true;customAudio.volume=0.6;customAudio.muted=!A.on;
-  const nm=document.getElementById('musicName');nm.textContent='♫ '+f.name.replace(/\.[^.]+$/,'').slice(0,40);nm.hidden=false;
-  document.getElementById('musicReset').hidden=false;document.getElementById('musicLbl').textContent='♫ CAMBIAR';
-});
-document.getElementById('musicReset').addEventListener('click',()=>{
-  if(customAudio){customAudio.pause();URL.revokeObjectURL(customAudio.src);customAudio=null;}
-  document.getElementById('musicName').hidden=true;document.getElementById('musicReset').hidden=true;document.getElementById('musicLbl').textContent='♫ PON TU MÚSICA';
-  document.getElementById('musicFile').value='';
-});
 document.getElementById('rotHint').addEventListener('click',enterFull);
 if(standalone)document.querySelectorAll('.fsbtn').forEach(b=>b.remove());
 if(standalone)document.getElementById('rotHint').textContent='↻ Gira el móvil para jugar';

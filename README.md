@@ -23,7 +23,7 @@ También funciona con mando. En el móvil se puede instalar: *Añadir a pantalla
 Av. de l'Almeda → Plaça de Catalunya → Parc de Can Mercader (Palau y Torre de la Miranda) → Museu de les Aigües → Citilab → L'Estadi.
 
 ## Música
-La banda sonora es una rumba catalana original en chiptune, compuesta para el juego. Con **♫ Pon tu música** puedes jugar con cualquier canción de tu dispositivo: el archivo solo se reproduce en tu navegador y no se sube a ningún sitio.
+Banda sonora chiptune original de estilo arcade, sintetizada en el navegador: un tema principal en Mi menor y otro más rápido para el jefe final.
 
 ## Técnica
 Un solo `index.html` con HTML5 Canvas. Todo el arte, la música y los efectos se generan por código; no usa recursos de terceros. Los lugares de Cornellà están dibujados como interpretación libre en píxel. Juego original inspirado en los arcades de los 90, sin relación con SNK ni con Metal Slug.
