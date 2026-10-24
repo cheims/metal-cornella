@@ -115,8 +115,14 @@ body.touch .keys{display:none}
     <div class="ov" id="ovPause" hidden>
       <p class="big">PAUSA</p>
       <button class="btn alt" id="btnResume">CONTINUAR</button>
+      <button class="btn alt mini" id="btnQuit" type="button">VOLVER AL INICIO</button>
+      <div class="btnrow" id="quitAsk" hidden>
+        <span class="small" style="color:var(--ink)">¿Salir? Se pierde la partida</span>
+        <button class="btn mini" id="btnQuitYes" type="button" style="background:var(--sr);color:#fff;box-shadow:0 .35cqw 0 #7a0c06;animation:none">SÍ, SALIR</button>
+        <button class="btn alt mini" id="btnQuitNo" type="button">NO</button>
+      </div>
       <button class="btn alt mini fsbtn" type="button"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M1 5V1h4M11 1h4v4M15 11v4h-4M5 15H1v-4"/></svg><span class="fslbl">PANTALLA COMPLETA</span></button>
-      <p class="small">P o ESC para volver</p>
+      <p class="small">P o ESC para seguir jugando</p>
     </div>
 
     <div class="ov" id="ovFs" hidden>
@@ -658,10 +664,10 @@ function newGame(){
   audioInit();musicStart('main');say('Misión uno. ¡Comienza!');
 }
 function showOv(id){for(const o of ['ovTitle','ovPause','ovOver','ovWin','ovFs'])document.getElementById(o).hidden=o!==id;document.getElementById('btnPause').hidden=!(id===null||id==='ovPause');const bf=document.getElementById('btnFull');if(bf)bf.hidden=id!==null;}
-function pauseGame(){if(S.mode!=='play')return;S.mode='paused';showOv('ovPause');if(A.ctx)A.ctx.suspend();document.getElementById('btnResume').focus();}
+function pauseGame(){if(S.mode!=='play')return;S.mode='paused';showOv('ovPause');document.getElementById('quitAsk').hidden=true;document.getElementById('btnQuit').hidden=false;if(A.ctx)A.ctx.suspend();document.getElementById('btnResume').focus();}
 function resumeGame(){if(S.mode!=='paused')return;S.mode='play';showOv(null);if(A.ctx)A.ctx.resume();for(const k in held)held[k]=false;}
 function openSelect(){
-  S.mode='select';S.sel=clamp(+store.get('mc_char','2')||0,0,CHARS.length-1);S.selT=20*60;S.selDone=0;showOv('sel');
+  S.mode='select';S.sel=clamp(+store.get('mc_char','2')||0,0,CHARS.length-1);S.selT=60*60;S.selDone=0;showOv('sel');
   audioInit();musicStart('main');resetWorld();
 }
 function confirmSelect(){if(S.selDone)return;S.char=S.sel;store.set('mc_char',String(S.sel));S.selDone=1;sfx.pickup();say(CHARS[S.sel].say+'!');}
@@ -1554,7 +1560,7 @@ function drawHUD(){
   // barra del jefe
   const b=enemies.find(e=>(e.type==='boss'||e.type==='tank')&&e.state!=='enter'&&e.state!=='wreck'&&e.state!=='dying');
   if(b){const bw=150,x=(W-bw)/2;txt(b.name,W/2,H-18,{align:'center',color:'#f7c613'});ctx.fillStyle='#000';ctx.fillRect(x-1,H-8,bw+2,5);ctx.fillStyle='#5a1010';ctx.fillRect(x,H-7,bw,3);ctx.fillStyle='#ff4a2a';ctx.fillRect(x,H-7,Math.round(bw*Math.max(0,b.hp)/b.max),3);}
-  if(banner){const t=banner.t,inn=Math.min(1,t/12),out=banner.life-t<15?(banner.life-t)/15:1,a=Math.min(inn,out);
+  if(banner&&S.mode!=='paused'){const t=banner.t,inn=Math.min(1,t/12),out=banner.life-t<15?(banner.life-t)/15:1,a=Math.min(inn,out);
     ctx.globalAlpha=Math.max(0,a);const y=58;
     txt(banner.text,W/2+Math.round((1-inn)*60),y,{size:16,bold:true,align:'center',color:'#f7c613'});
     if(banner.sub)txt(banner.sub,W/2-Math.round((1-inn)*60),y+20,{size:8,align:'center',color:'#fff'});
@@ -1580,6 +1586,15 @@ document.getElementById('rotHint').addEventListener('click',enterFull);
 if(standalone)document.querySelectorAll('.fsbtn').forEach(b=>b.remove());
 if(standalone)document.getElementById('rotHint').textContent='↻ Gira el móvil para jugar';
 document.getElementById('btnResume').addEventListener('click',resumeGame);
+// volver al inicio desde la pausa, con confirmación dentro de la propia página
+document.getElementById('btnQuit').addEventListener('click',()=>{document.getElementById('btnQuit').hidden=true;document.getElementById('quitAsk').hidden=false;document.getElementById('btnQuitNo').focus();});
+document.getElementById('btnQuitNo').addEventListener('click',()=>{document.getElementById('quitAsk').hidden=true;document.getElementById('btnQuit').hidden=false;document.getElementById('btnResume').focus();});
+document.getElementById('btnQuitYes').addEventListener('click',quitToTitle);
+function quitToTitle(){
+  if(S.mode!=='paused')return;
+  saveHi();if(A.ctx)A.ctx.resume();try{speechSynthesis.cancel();}catch(_){}
+  for(const k in held)held[k]=false;resetWorld();player=null;toTitle();
+}
 document.getElementById('btnPause').addEventListener('click',()=>{S.mode==='play'?pauseGame():resumeGame();});
 document.getElementById('btnContinue').addEventListener('click',()=>{if(S.mode==='over')continueGame();});
 document.getElementById('btnAgain').addEventListener('click',()=>{toTitle();});

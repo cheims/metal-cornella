@@ -20,7 +20,7 @@ Arcade de acción (*run & gun*) ambientado en Cornellà de Llobregat: de l'Almed
 También funciona con mando. En el móvil se puede instalar: *Añadir a pantalla de inicio*.
 
 ## Personajes
-Al pulsar Enter eliges vecino en una pantalla de selección (20 s para decidir). Cada uno tiene velocidad, salto y escudo del 1 al 5.
+Al pulsar Enter eliges vecino en una pantalla de selección (60 s para decidir). Cada uno tiene velocidad, salto y escudo del 1 al 5.
 
 | Personaje | Cómo es | Vel. | Salto | Escudo |
 |---|---|---|---|---|
