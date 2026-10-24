@@ -19,6 +19,22 @@ Arcade de acción (*run & gun*) ambientado en Cornellà de Llobregat: de l'Almed
 
 También funciona con mando. En el móvil se puede instalar: *Añadir a pantalla de inicio*.
 
+## Personajes
+Al pulsar Enter eliges vecino en una pantalla de selección (20 s para decidir). Cada uno tiene velocidad, salto y escudo del 1 al 5.
+
+| Personaje | Cómo es | Vel. | Salto | Escudo |
+|---|---|---|---|---|
+| Don Andrés | Traje, bici larga y 3 hijos detrás | 3 | 2 | 5 |
+| Borja Kenyata | Informático runner con gorra roja y una B | 5 | 4 | 1 |
+| Cheims 4matic | Informático con su PC en la mano | 3 | 3 | 4 |
+| AlbertoJuice | Calavera con traje de rayas blancas y negras | 4 | 4 | 2 |
+| Toni Dimoni | Disfrazado de demonio | 3 | 5 | 2 |
+| Salvatore autobusero | Conduce el bus asomado a la ventana y grita «Més pagues i més gruixudes!» | 4 | 1 | 5 |
+| Joseph Rotondas | Moto de 3 ruedas, planos y maletín | 5 | 2 | 3 |
+| Alberto Mikolápiz | Disfrazado de lápiz | 3 | 4 | 3 |
+| Olmito carriles bici | Alto, delgado y en bici | 5 | 3 | 2 |
+| Dices | Bici con remolque y 3 hijos | 4 | 2 | 4 |
+
 ## Recorrido
 Av. de l'Almeda → Plaça de Catalunya → Parc de Can Mercader (Palau y Torre de la Miranda) → Museu de les Aigües → Citilab → L'Estadi.
 
