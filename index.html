@@ -63,7 +63,7 @@ canvas{display:block;width:100%;height:100%;image-rendering:pixelated;image-rend
 .stats dt{color:var(--dim)} .stats dd{margin:0;color:var(--ink);font-variant-numeric:tabular-nums;text-align:right}
 .count{font-family:var(--f-logo);font-size:12cqw;color:var(--ink);line-height:1}
 .topbar{position:absolute;z-index:5;top:1.2cqw;left:50%;transform:translateX(-50%);display:flex;gap:8px}
-.tbtn{width:6cqw;height:6cqw;min-width:34px;min-height:34px;border:0;border-radius:4px;background:rgba(0,0,0,.45);color:#fff;font:700 14px var(--f-pix);display:none;align-items:center;justify-content:center;padding:0}
+.tbtn{width:6cqw;height:6cqw;min-width:34px;min-height:34px;border:0;border-radius:4px;background:rgba(0,0,0,.45);color:#fff;font:700 14px var(--f-pix);display:flex;touch-action:manipulation;align-items:center;justify-content:center;padding:0}
 .tbtn svg{width:55%;height:55%}
 .rotate{display:none;margin:0;font-family:var(--f-pix);font-size:13px;color:var(--sy);text-align:center;letter-spacing:.04em}
 .keys{margin:0;font-family:var(--f-pix);font-size:11px;color:var(--dim);letter-spacing:.04em;text-align:center;line-height:1.9;max-width:100%}
@@ -72,13 +72,18 @@ canvas{display:block;width:100%;height:100%;image-rendering:pixelated;image-rend
 .pad{position:fixed;left:0;right:0;bottom:0;display:none;justify-content:space-between;align-items:flex-end;pointer-events:none;
   padding:0 max(16px, env(safe-area-inset-right,0px)) max(14px, env(safe-area-inset-bottom,0px)) max(16px, env(safe-area-inset-left,0px))}
 .pad>*{pointer-events:auto}
+.abtns{pointer-events:auto}
 .stick{width:132px;height:132px;border-radius:50%;background:rgba(255,255,255,.07);border:2px solid rgba(255,255,255,.18);position:relative;touch-action:none}
-.stick::before{content:"";position:absolute;inset:38%;border-radius:50%;background:rgba(255,255,255,.18)}
+.stick .knob{position:absolute;left:31%;top:31%;width:38%;height:38%;border-radius:50%;background:rgba(255,255,255,.22);border:2px solid rgba(255,255,255,.3);pointer-events:none;transition:transform .04s linear}
 .stick span{position:absolute;font:700 12px var(--f-pix);color:rgba(255,255,255,.55)}
 .stick .u{top:8px;left:50%;transform:translateX(-50%)} .stick .d{bottom:8px;left:50%;transform:translateX(-50%)}
 .stick .l{left:10px;top:50%;transform:translateY(-50%)} .stick .r{right:10px;top:50%;transform:translateY(-50%)}
 .abtns{display:grid;grid-template-columns:repeat(2,64px);grid-template-rows:repeat(2,64px);gap:10px}
-.abtns button{border-radius:50%;border:2px solid rgba(255,255,255,.25);font:700 10px var(--f-pix);color:#fff;touch-action:none}
+.abtns button{border-radius:50%;border:2px solid rgba(255,255,255,.25);font:700 10px var(--f-pix);color:#fff;touch-action:none;pointer-events:none;transition:transform .05s,filter .05s}
+.abtns button.on{transform:scale(.9);filter:brightness(1.6);border-color:rgba(255,255,255,.8)}
+.pad,.pad *{-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+.ov button,.ov label,.btn{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.btn svg{width:1.1em;height:1.1em;vertical-align:-.15em;margin-right:.4em}
 .abtns .b-fire{background:rgba(216,38,28,.55);grid-column:2;grid-row:2}
 .abtns .b-jump{background:rgba(247,198,19,.45);grid-column:1;grid-row:2;color:#111}
 .abtns .b-shield{background:rgba(106,208,255,.4);grid-column:1;grid-row:1}
@@ -86,7 +91,7 @@ canvas{display:block;width:100%;height:100%;image-rendering:pixelated;image-rend
 body.touch{--reserve:24px}
 body.touch .pad{display:flex}
 body.touch .keys{display:none}
-body.touch .tbtn{display:flex}
+
 @media (orientation:portrait){ body.touch{justify-content:flex-start;--reserve:260px} body.touch .wrap{height:calc(100% - 230px);justify-content:center} body.touch .rotate{display:block} }
 @media (orientation:landscape){ body.touch .stick{width:112px;height:112px} body.touch .abtns{grid-template-columns:repeat(2,56px);grid-template-rows:repeat(2,56px)} }
 </style>
@@ -96,7 +101,7 @@ body.touch .tbtn{display:flex}
 <div class="wrap">
   <div class="screen" id="screen">
     <canvas id="game" width="384" height="216" aria-label="Metal Cornellà, juego de acción en Cornellà de Llobregat"></canvas>
-    <div class="topbar"><button class="tbtn" id="btnFull" aria-label="Pantalla completa"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 5V1h4M11 1h4v4M15 11v4h-4M5 15H1v-4"/></svg></button><button class="tbtn" id="btnPause" aria-label="Pausa">II</button></div>
+    <div class="topbar"><button class="tbtn fsbtn" id="btnFull" aria-label="Pantalla completa"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 5V1h4M11 1h4v4M15 11v4h-4M5 15H1v-4"/></svg></button><button class="tbtn" id="btnPause" aria-label="Pausa">II</button></div>
 
     <div class="ov" id="ovTitle">
       <div class="logo" aria-label="Metal Cornellà"><span class="l1">METAL</span><span class="l2">CORNELLÀ</span></div>
@@ -106,6 +111,7 @@ body.touch .tbtn{display:flex}
         <label class="btn alt mini" for="musicFile" id="musicLbl">♫ PON TU MÚSICA</label>
         <input type="file" id="musicFile" class="vh" accept="audio/*">
         <button class="btn alt mini" id="musicReset" hidden>MÚSICA DEL JUEGO</button>
+        <button class="btn alt mini fsbtn" type="button"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M1 5V1h4M11 1h4v4M15 11v4h-4M5 15H1v-4"/></svg><span class="fslbl">PANTALLA COMPLETA</span></button>
       </div>
       <p class="small" id="musicName" hidden></p>
       <p class="small">RÉCORD <span id="hiScore">000000</span> · M SONIDO</p>
@@ -114,7 +120,14 @@ body.touch .tbtn{display:flex}
     <div class="ov" id="ovPause" hidden>
       <p class="big">PAUSA</p>
       <button class="btn alt" id="btnResume">CONTINUAR</button>
+      <button class="btn alt mini fsbtn" type="button"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M1 5V1h4M11 1h4v4M15 11v4h-4M5 15H1v-4"/></svg><span class="fslbl">PANTALLA COMPLETA</span></button>
       <p class="small">P o ESC para volver</p>
+    </div>
+
+    <div class="ov" id="ovFs" hidden>
+      <p class="big">PANTALLA COMPLETA</p>
+      <p class="tag" id="fsMsg" style="max-width:60ch;line-height:1.6;text-transform:none"></p>
+      <button class="btn alt" id="btnFsOk">ENTENDIDO</button>
     </div>
 
     <div class="ov" id="ovOver" hidden>
@@ -140,7 +153,7 @@ body.touch .tbtn{display:flex}
 </div>
 
 <div class="pad" id="pad" aria-hidden="true">
-  <div class="stick" id="stick"><span class="u">▲</span><span class="d">▼</span><span class="l">◀</span><span class="r">▶</span></div>
+  <div class="stick" id="stick"><span class="knob" id="knob"></span><span class="u">▲</span><span class="d">▼</span><span class="l">◀</span><span class="r">▶</span></div>
   <div class="abtns">
     <button class="b-shield" data-a="shield">ESCUDO</button>
     <button class="b-bomb" data-a="bomb">BOMBA</button>
@@ -357,7 +370,7 @@ function setSound(on){
 const KEYMAP={ArrowLeft:'left',KeyA:'left',ArrowRight:'right',KeyD:'right',ArrowUp:'up',KeyW:'up',ArrowDown:'down',KeyS:'down',
   KeyX:'shield',KeyI:'shield',KeyK:'jump',Space:'jump',KeyZ:'fire',KeyJ:'fire',KeyC:'bomb',KeyL:'bomb',Enter:'start',KeyP:'pause',Escape:'pause',KeyM:'mute'};
 const held={},touchHeld={};let padHeld={},padPrev={},pressedQ=new Set(),P=new Set();
-addEventListener('keydown',e=>{if(e.code==='KeyF'&&!e.repeat){toggleFull();return;}const a=KEYMAP[e.code];if(!a)return;e.preventDefault();if(!held[a])pressedQ.add(a);held[a]=true;audioInit();});
+addEventListener('keydown',e=>{if(e.code==='KeyF'&&!e.repeat){fullAction();return;}const a=KEYMAP[e.code];if(!a)return;e.preventDefault();if(!held[a])pressedQ.add(a);held[a]=true;audioInit();});
 addEventListener('keyup',e=>{const a=KEYMAP[e.code];if(a){held[a]=false;e.preventDefault();}});
 addEventListener('blur',()=>{for(const k in held)held[k]=false;if(S.mode==='play')pauseGame();});
 document.addEventListener('visibilitychange',()=>{if(document.hidden&&S.mode==='play')pauseGame();});
@@ -374,33 +387,72 @@ function pollPad(){
 const fsOK=!!(document.fullscreenEnabled||document.webkitFullscreenEnabled);
 const standalone=(window.matchMedia&&matchMedia('(display-mode: standalone), (display-mode: fullscreen)').matches)||navigator.standalone===true;
 const inFull=()=>!!(document.fullscreenElement||document.webkitFullscreenElement);
-function enterFull(){
+function enterFull(onFail){
   if(!fsOK||inFull())return;const el=document.documentElement;
   try{const pr=(el.requestFullscreen||el.webkitRequestFullscreen).call(el,{navigationUI:'hide'});
     const lock=()=>{try{if(screen.orientation&&screen.orientation.lock)screen.orientation.lock('landscape').catch(()=>{});}catch(_){}};
-    if(pr&&pr.then)pr.then(lock).catch(()=>{});else lock();}catch(_){}
+    if(pr&&pr.then)pr.then(lock).catch(()=>{if(onFail)onFail();});else lock();}catch(_){if(onFail)onFail();}
 }
-function toggleFull(){if(!fsOK)return;if(inFull()){try{(document.exitFullscreen||document.webkitExitFullscreen).call(document);}catch(_){}}else enterFull();}
+function toggleFull(onFail){if(!fsOK)return;if(inFull()){try{(document.exitFullscreen||document.webkitExitFullscreen).call(document);}catch(_){}}else enterFull(onFail);}
+const isIOS=/iPad|iPhone|iPod/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+let fsReturn=null;
+function fullAction(){
+  if(fsOK){toggleFull(fsHelp);return;}
+  fsHelp();
+}
+function fsHelp(){
+  // sin pantalla completa disponible (iPhone, o dentro de otra página): explicamos la alternativa
+  const msg=isIOS?'Safari no deja poner una web a pantalla completa en el iPhone. Para jugar sin barras: pulsa Compartir y luego "Añadir a pantalla de inicio", y abre Metal Cornellà desde su icono.'
+    :'Este navegador no permite la pantalla completa aquí. Abre el juego en https://cheims.github.io/metal-cornella/ con Chrome y vuelve a pulsar el botón, o instálalo desde el menú: "Añadir a pantalla de inicio".';
+  document.getElementById('fsMsg').textContent=msg;
+  if(S.mode==='play')pauseGame();
+  fsReturn=S.mode==='title'?'ovTitle':S.mode==='paused'?'ovPause':null;
+  showOv('ovFs');document.getElementById('btnFsOk').focus();
+}
+function updateFsLabels(){const on=inFull();document.querySelectorAll('.fslbl').forEach(l=>l.textContent=on?'SALIR DE PANTALLA COMPLETA':'PANTALLA COMPLETA');document.getElementById('btnFull').setAttribute('aria-label',on?'Salir de pantalla completa':'Pantalla completa');}
+document.addEventListener('fullscreenchange',()=>{updateFsLabels();resetZoom();});document.addEventListener('webkitfullscreenchange',updateFsLabels);
 // táctil
 const isTouch=(window.matchMedia&&matchMedia('(pointer:coarse)').matches)||('ontouchstart' in window);
 if(isTouch){document.body.classList.add('touch');document.getElementById('btnStart').textContent='TOCA PARA EMPEZAR';document.getElementById('btnContinue').textContent='TOCA PARA CONTINUAR';}
-document.querySelectorAll('.abtns button').forEach(b=>{
-  const a=b.dataset.a;
-  const on=e=>{e.preventDefault();audioInit();if(!touchHeld[a])pressedQ.add(a);touchHeld[a]=true;};
-  const off=e=>{e.preventDefault();touchHeld[a]=false;};
-  b.addEventListener('pointerdown',on);['pointerup','pointercancel','pointerleave'].forEach(t=>b.addEventListener(t,off));
-  b.addEventListener('contextmenu',e=>e.preventDefault());
-});
-(()=>{const st=document.getElementById('stick');let id=null;
-  const setDir=e=>{const r=st.getBoundingClientRect(),dx=e.clientX-(r.left+r.width/2),dy=e.clientY-(r.top+r.height/2);
-    const L=dx<-14,Rr=dx>14,U=dy<-22,D=dy>22;
+// Un único gestor para todos los dedos: en cada evento se recalcula qué botones hay bajo cada dedo.
+// Así no se quedan botones "pegados", se puede deslizar de un botón a otro y se bloquean zoom, lupa y menú del sistema.
+const stickEl=document.getElementById('stick'),knobEl=document.getElementById('knob'),btnEls=[...document.querySelectorAll('.abtns button')];
+let stickId=null;
+function hitButton(x,y){let best=null,bd=1e9;for(const b of btnEls){const r=b.getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height/2,d=Math.hypot(x-cx,y-cy);if(d<r.width/2+12&&d<bd){bd=d;best=b;}}return best;}
+function inStick(x,y){const r=stickEl.getBoundingClientRect();return Math.hypot(x-(r.left+r.width/2),y-(r.top+r.height/2))<r.width/2+28;}
+function syncTouches(list){
+  const next={};let st=null;
+  for(const t of list){if(t.identifier===stickId){st=t;continue;}const b=hitButton(t.clientX,t.clientY);if(b)next[b.dataset.a]=true;}
+  for(const b of btnEls){const a=b.dataset.a,on=!!next[a];if(on&&!touchHeld[a])pressedQ.add(a);touchHeld[a]=on;b.classList.toggle('on',on);}
+  if(st){
+    const r=stickEl.getBoundingClientRect(),rad=r.width/2,dx=st.clientX-(r.left+rad),dy=st.clientY-(r.top+rad);
+    const L=dx<-rad*0.2,Rr=dx>rad*0.2,U=dy<-rad*0.35,D=dy>rad*0.35;
     if(L&&!touchHeld.left)pressedQ.add('left');if(Rr&&!touchHeld.right)pressedQ.add('right');
-    touchHeld.left=L;touchHeld.right=Rr;touchHeld.up=U;touchHeld.down=D;};
-  const clear=()=>{touchHeld.left=touchHeld.right=touchHeld.up=touchHeld.down=false;id=null;};
-  st.addEventListener('pointerdown',e=>{e.preventDefault();audioInit();id=e.pointerId;try{st.setPointerCapture(id);}catch(_){}setDir(e);});
-  st.addEventListener('pointermove',e=>{if(e.pointerId===id)setDir(e);});
-  ['pointerup','pointercancel','lostpointercapture'].forEach(t=>st.addEventListener(t,e=>{if(e.pointerId===id)clear();}));
-})();
+    touchHeld.left=L;touchHeld.right=Rr;touchHeld.up=U;touchHeld.down=D;
+    const m=Math.min(1,Math.hypot(dx,dy)/(rad*0.7))*rad*0.45,a=Math.atan2(dy,dx);knobEl.style.transform=`translate(${Math.cos(a)*m}px,${Math.sin(a)*m}px)`;
+  }else{touchHeld.left=touchHeld.right=touchHeld.up=touchHeld.down=false;knobEl.style.transform='';}
+}
+function isUiTarget(t){return !!(t&&t.closest&&t.closest('.ov button,.ov label,.ov input,.topbar button,#rotHint'));}
+function onTouch(e){
+  if(e.type==='touchstart'){audioInit();for(const t of e.changedTouches)if(stickId===null&&inStick(t.clientX,t.clientY))stickId=t.identifier;}
+  else if(e.type==='touchend'||e.type==='touchcancel'){for(const t of e.changedTouches)if(t.identifier===stickId)stickId=null;}
+  syncTouches(e.touches);
+  if(!isUiTarget(e.target)&&e.cancelable)e.preventDefault();
+}
+['touchstart','touchmove','touchend','touchcancel'].forEach(t=>document.addEventListener(t,onTouch,{passive:false}));
+['gesturestart','gesturechange','gestureend'].forEach(t=>document.addEventListener(t,e=>e.preventDefault(),{passive:false}));
+document.addEventListener('dblclick',e=>e.preventDefault(),{passive:false});
+document.addEventListener('contextmenu',e=>{if(isTouch)e.preventDefault();});
+// si el navegador ya estaba ampliado, intentamos devolverlo al zoom inicial (iOS reevalúa el viewport al reescribirlo)
+function resetZoom(){
+  const m=document.querySelector('meta[name=viewport]');if(!m)return;
+  const c=m.content.replace(/,\s*maximum-scale=[^,]*/,'');m.content=c+', maximum-scale=1';
+  setTimeout(()=>{m.content=c+', maximum-scale=1';},60);
+}
+if(window.visualViewport)visualViewport.addEventListener('resize',()=>{if(visualViewport.scale>1.02)resetZoom();});
+addEventListener('orientationchange',()=>setTimeout(resetZoom,250));
+// soltar todo si la app pasa a segundo plano
+addEventListener('pagehide',()=>{stickId=null;syncTouches([]);});
 
 // =====================================================================
 //  CAPAS DE FONDO PRE-RENDERIZADAS
@@ -610,7 +662,7 @@ function newGame(){
   banner={t:0,text:'MISIÓN 1',sub:'¡SOM-HI!',life:150};
   audioInit();musicStart('rumba');say('Misión uno. ¡Comienza!');
 }
-function showOv(id){for(const o of ['ovTitle','ovPause','ovOver','ovWin'])document.getElementById(o).hidden=o!==id;document.getElementById('btnPause').hidden=!(id===null||id==='ovPause');const bf=document.getElementById('btnFull');if(bf)bf.hidden=id==='ovTitle';}
+function showOv(id){for(const o of ['ovTitle','ovPause','ovOver','ovWin','ovFs'])document.getElementById(o).hidden=o!==id;document.getElementById('btnPause').hidden=!(id===null||id==='ovPause');const bf=document.getElementById('btnFull');if(bf)bf.hidden=id!==null;}
 function pauseGame(){if(S.mode!=='play')return;S.mode='paused';showOv('ovPause');if(A.ctx)A.ctx.suspend();if(customAudio)customAudio.pause();document.getElementById('btnResume').focus();}
 function resumeGame(){if(S.mode!=='paused')return;S.mode='play';showOv(null);if(A.ctx)A.ctx.resume();if(customAudio&&A.want)customAudio.play().catch(()=>{});for(const k in held)held[k]=false;}
 function toTitle(){S.mode='title';showOv('ovTitle');musicStop();document.getElementById('hiScore').textContent=String(hi).padStart(6,'0');document.getElementById('btnStart').focus();}
@@ -1342,9 +1394,10 @@ function loop(now){
 }
 
 // ---------- botones de los menús
-document.getElementById('btnStart').addEventListener('click',()=>{audioInit();if(isTouch)enterFull();if(S.mode==='title')newGame();});
-document.getElementById('ovTitle').addEventListener('pointerdown',e=>{if(!e.target.closest('button,label,input')&&S.mode==='title'&&isTouch){audioInit();enterFull();newGame();}});
-document.getElementById('btnFull').addEventListener('click',toggleFull);
+document.getElementById('btnStart').addEventListener('click',()=>{audioInit();resetZoom();if(isTouch)enterFull();if(S.mode==='title')newGame();});
+document.getElementById('ovTitle').addEventListener('pointerdown',e=>{if(!e.target.closest('button,label,input')&&S.mode==='title'&&isTouch){audioInit();resetZoom();enterFull();newGame();}});
+document.querySelectorAll('.fsbtn').forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();fullAction();}));
+document.getElementById('btnFsOk').addEventListener('click',()=>{showOv(fsReturn);if(fsReturn==='ovTitle')document.getElementById('btnStart').focus();else if(fsReturn==='ovPause')document.getElementById('btnResume').focus();});
 // "Pon tu música": reproduce un archivo del propio dispositivo; no se sube a ningún sitio
 document.getElementById('musicFile').addEventListener('change',e=>{
   const f=e.target.files&&e.target.files[0];if(!f)return;
@@ -1359,7 +1412,7 @@ document.getElementById('musicReset').addEventListener('click',()=>{
   document.getElementById('musicFile').value='';
 });
 document.getElementById('rotHint').addEventListener('click',enterFull);
-if(!fsOK||standalone)document.getElementById('btnFull').remove();
+if(standalone)document.querySelectorAll('.fsbtn').forEach(b=>b.remove());
 if(standalone)document.getElementById('rotHint').textContent='↻ Gira el móvil para jugar';
 document.getElementById('btnResume').addEventListener('click',resumeGame);
 document.getElementById('btnPause').addEventListener('click',()=>{S.mode==='play'?pauseGame():resumeGame();});
@@ -1370,7 +1423,7 @@ document.querySelectorAll('.ov button').forEach(b=>b.addEventListener('keydown',
 
 buildFar();buildMid();buildGround();resetWorld();toTitle();
 requestAnimationFrame(loop);
-window.MC={S,get eproj(){return eproj;},get player(){return player;},set player(v){player=v;},get enemies(){return enemies;},get camX(){return camX;},set camX(v){camX=v;},warp(c){while(spawnIdx<SPAWNS.length&&SPAWNS[spawnIdx][0]<c-150)spawnIdx++;enemies=[];camX=c;lockX=null;player.x=c+60;player.y=100;},get lives(){return lives;},set lives(v){lives=v;}};
+window.MC={S,touchHeld,get eproj(){return eproj;},get player(){return player;},set player(v){player=v;},get enemies(){return enemies;},get camX(){return camX;},set camX(v){camX=v;},warp(c){while(spawnIdx<SPAWNS.length&&SPAWNS[spawnIdx][0]<c-150)spawnIdx++;enemies=[];camX=c;lockX=null;player.x=c+60;player.y=100;},get lives(){return lives;},set lives(v){lives=v;}};
 </script>
 <script>if("serviceWorker" in navigator&&location.protocol==="https:")addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));</script>
 </body>
